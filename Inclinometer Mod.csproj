@@ -65,8 +65,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Items\BearingCompass\CompassPhysics.cs" />
+    <Compile Include="Items\BearingCompass\CompassSetup.cs" />
+    <Compile Include="Items\Inclinometer\InclinometerSetup.cs" />
+    <Compile Include="NavigationSuitePlugin.cs" />
+    <Compile Include="Patches\InventoryPatches.cs" />
+    <Compile Include="Patches\PrefabPatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scenes\ShopInjection.cs" />
+    <Compile Include="Items\Inclinometer\InclinometerPhysics.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
