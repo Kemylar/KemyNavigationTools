@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +15,7 @@ namespace KemyNavTools
         {
             string sceneName = scene.name.ToLower();
 
+            // Reset spawn flags when returning to the main menu
             if (sceneName.Contains("main menu"))
             {
                 spawnedGRC = false;
@@ -23,6 +24,7 @@ namespace KemyNavTools
                 return;
             }
 
+            // Ensure runner component is active for coroutine context execution
             GameObject runner = GameObject.Find("ShopItemSpawnerRunner");
             if (runner == null)
             {
@@ -31,27 +33,40 @@ namespace KemyNavTools
             }
             var component = runner.GetComponent<CoroutineRunner>() ?? runner.AddComponent<CoroutineRunner>();
 
+            // Handle injection routing for Gold Rock City merchant stall
             if (sceneName.Contains("gold rock") && !spawnedGRC)
             {
-                // 1. Spawn Inclinometer (Slot 830)
+                // Gold Rock City: Inclinometer Spawner Configuration
                 component.StartCoroutine(DelayedInjectionRoutine("island 1 A (gold rock) scenery", "GRC",
                     new Vector3(1520.0f, 7.52f, -380.5f), Quaternion.Euler(77.5f, 241f, 0f), 830));
 
-                // 2. Spawn Bearing Compass (Slot 831)
+                // Gold Rock City: Bearing Compass Spawner Configuration
                 component.StartCoroutine(DelayedInjectionRoutine("island 1 A (gold rock) scenery", "GRC",
-                    new Vector3(1520.4f, 7.52f, -380.5f), Quaternion.Euler(0f, 0f, 0f), 831));
+                    new Vector3(1522.568f, 7.520f, -383.791f), Quaternion.Euler(343.5f, 237.5f, 0.0f), 831));
             }
 
+            // Handle injection routing for Fort Aestrin merchant stall
             if (sceneName.Contains("island 15 m (fort)") && !spawnedAestrin)
             {
-                component.StartCoroutine(DelayedInjectionRoutine("island 15 M (Fort) scenery", "Aestrin",
-                    new Vector3(-75.316f, 2.7f, 44.2995f), Quaternion.Euler(0f, 180f, 0f), 830));
+                // Fort Aestrin: Bearing Compass Spawner Configuration
+                component.StartCoroutine(DelayedInjectionRoutine("island 15 M (Fort) scenery", "FA",
+                    new Vector3(-76.904f, 2.870f, 44.645f), Quaternion.Euler(271.0f, 180.0f, 0.0f), 831));
+
+                // Fort Aestrin: Inclinometer Spawner Configuration
+                component.StartCoroutine(DelayedInjectionRoutine("island 15 M (Fort) scenery", "FA",
+                    new Vector3(-73.704f, 2.870f, 44.620f), Quaternion.Euler(0.0f, 180.0f, 0.0f), 830));
             }
 
+            // Handle injection routing for Dragon Cliffs merchant stall
             if (sceneName.Contains("island 9 e dragon cliffs") && !spawnedDragonCliffs)
             {
-                component.StartCoroutine(DelayedInjectionRoutine("island 9 E (dragon cliffs) scenery", "DragonCliffs",
-                    new Vector3(-89.268f, 4.477f, -544.36f), Quaternion.Euler(80f, 230f, 0f), 830));
+                // Dragon Cliffs: Bearing Compass Spawner Configuration
+                component.StartCoroutine(DelayedInjectionRoutine("island 9 E (dragon cliffs) scenery", "DC",
+                    new Vector3(-91.312f, 5.272f, -541.350f), Quaternion.Euler(89.0f, 44.6f, 0.0f), 831));
+
+                // Dragon Cliffs: Inclinometer Spawner Configuration
+                component.StartCoroutine(DelayedInjectionRoutine("island 9 E (dragon cliffs) scenery", "DC",
+                    new Vector3(-91.329f, 4.762f, -541.365f), Quaternion.Euler(0.0f, 224.6f, 0.0f), 830));
             }
         }
 
@@ -59,7 +74,7 @@ namespace KemyNavTools
         {
             yield return new WaitForSeconds(3f);
 
-            // Fetch the target prefab instance fields tracking inside your new PrefabPatches runtime file
+            // Fetch target runtime asset from preload caching context
             GameObject targetPrefab = (itemIndex == 830)
                 ? PreloadDirectoryPatch.InclinometerPrefabRef
                 : PreloadDirectoryPatch.CompassPrefabRef;
