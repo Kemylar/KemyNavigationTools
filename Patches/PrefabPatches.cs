@@ -9,12 +9,15 @@ namespace KemyNavTools
     {
         private const int INCLINOMETER_INDEX = 830;
         private const int COMPASS_INDEX = 831;
+        private const int BINNACLE_INDEX = 832; // Added slot for the test piece
 
         private static GameObject inclinometerPrefab;
         private static GameObject compassPrefab;
+        private static GameObject binnaclePrefab; // Added reference
 
         public static GameObject InclinometerPrefabRef => inclinometerPrefab;
         public static GameObject CompassPrefabRef => compassPrefab;
+        public static GameObject BinnaclePrefabRef => binnaclePrefab; // Added reference
 
         [HarmonyPrefix]
         public static void Prefix(PrefabsDirectory __instance)
@@ -23,9 +26,10 @@ namespace KemyNavTools
 
             try
             {
-                if (__instance.directory.Length <= COMPASS_INDEX)
+                // Resizing the array safely to accommodate the new index 832
+                if (__instance.directory.Length <= BINNACLE_INDEX)
                 {
-                    Array.Resize(ref __instance.directory, COMPASS_INDEX + 10);
+                    Array.Resize(ref __instance.directory, BINNACLE_INDEX + 10);
                 }
             }
             catch (Exception ex)
@@ -49,11 +53,10 @@ namespace KemyNavTools
                 }
                 __instance.directory[INCLINOMETER_INDEX] = inclinometerPrefab;
 
-                // 2. Reverted Bearing Compass Injection (Back to original asset name)
+                // 2. Bearing Compass Injection
                 if (compassPrefab == null)
                 {
                     compassPrefab = InclinometerPlugin.MainAssetBundle.LoadAsset<GameObject>("BearingCompass");
-
                     if (compassPrefab != null)
                     {
                         CompassSetup.Configure(compassPrefab);
@@ -64,6 +67,21 @@ namespace KemyNavTools
                     }
                 }
                 __instance.directory[COMPASS_INDEX] = compassPrefab;
+
+                // 3. Binnacle Injection
+                if (binnaclePrefab == null)
+                {
+                    binnaclePrefab = InclinometerPlugin.MainAssetBundle.LoadAsset<GameObject>("Binnacle");
+                    if (binnaclePrefab != null)
+                    {
+                        BinnacleSetup.Configure(binnaclePrefab);
+                    }
+                    else
+                    {
+                        InclinometerPlugin.DiagLogger.LogError("[NAV SUITE] Critical Error: Binnacle prefab not found in bundle!");
+                    }
+                }
+                __instance.directory[BINNACLE_INDEX] = binnaclePrefab;
             }
             catch (Exception ex)
             {
