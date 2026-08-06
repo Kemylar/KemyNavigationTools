@@ -1,14 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
-using KemyNavTools;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace KemyNavTools
-
 {
     [BepInPlugin("com.larsonlogistics.sailwind.navsuite", "Navigation Suite Mod", "1.0.0")]
     public class InclinometerPlugin : BaseUnityPlugin
@@ -38,8 +35,6 @@ namespace KemyNavTools
 
             var harmony = new Harmony("com.larsonlogistics.sailwind.navsuite");
             harmony.PatchAll();
-
-            SceneManager.sceneLoaded += ShopInjection.OnSceneLoaded;
         }
 
         private void OnDestroy()
